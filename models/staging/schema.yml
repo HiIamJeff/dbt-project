@@ -1,0 +1,13 @@
+# schema.yml
+
+version: 2
+
+sources:
+    - name: staging
+      database: inbound-study-375219
+      schema: dezoomcamp
+
+      tables:
+          - name: green_tripdata
+          - name: yellow_tripdata
+          - name: rides
