@@ -1,18 +1,12 @@
 {{ config(materialized='view') }}
 
--- SELECT trip_distance
--- -- FROM {{ source('staging', 'green_tripdata') }}
--- FROM {{ source('staging', 'rides') }}
--- LIMIT 50
-
-
--- with tripdata as 
--- (
---   select *,
---     row_number() over(partition by vendorid, lpep_pickup_datetime) as rn
---   from {{ source('staging','green_tripdata') }}
---   where vendorid is not null 
--- )
+with tripdata as 
+(
+  select *,
+    row_number() over(partition by vendorid, lpep_pickup_datetime) as rn
+  from {{ source('staging','green_tripdata') }}
+  where vendorid is not null 
+)
 select
     -- identifiers
     {{ dbt_utils.surrogate_key(['vendorid', 'lpep_pickup_datetime']) }} as tripid,
@@ -45,7 +39,7 @@ select
     cast(congestion_surcharge as numeric) as congestion_surcharge
 -- from tripdata
 FROM {{ source('staging', 'green_tripdata') }}
--- where rn = 1
+where rn = 1
 -- limit 500
 
 -- dbt build --m <model.sql> --var 'is_test_run: false'
